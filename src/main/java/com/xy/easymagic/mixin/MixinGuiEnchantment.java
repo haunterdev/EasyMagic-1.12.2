@@ -3,6 +3,7 @@ package com.xy.easymagic.mixin;
 import com.google.common.collect.Lists;
 import com.xy.easymagic.client.GuiButtonReroll;
 import com.xy.easymagic.config.EasyMagicConfig;
+import com.xy.easymagic.network.MessageEnchantHints;
 import com.xy.easymagic.network.MessageReroll;
 import com.xy.easymagic.network.PacketHandler;
 import net.minecraft.client.gui.GuiEnchantment;
@@ -25,11 +26,25 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
 @Mixin(GuiEnchantment.class)
 public abstract class MixinGuiEnchantment extends GuiContainer {
+
+    @Unique
+    private static final Method easymagic$enchTableThreadLocalSet;
+
+    static {
+        Method m = null;
+        try {
+            Class<?> cls = Class.forName("enchantmentcontrol.util.FromEnchTableThreadLocal");
+            m = cls.getMethod("set", boolean.class);
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+        }
+        easymagic$enchTableThreadLocalSet = m;
+    }
 
     @Shadow
     @Final
@@ -93,7 +108,10 @@ public abstract class MixinGuiEnchantment extends GuiContainer {
             for (int slot = 0; slot < 3; slot++) {
                 if (this.isPointInRegion(60, 14 + 19 * slot, 108, 17, mouseX, mouseY)
                         && this.container.enchantLevels[slot] > 0) {
-                    List<EnchantmentData> fullList = easymagic$computeEnchantList(slot);
+                    List<EnchantmentData> fullList = MessageEnchantHints.getHints(this.container.windowId, slot);
+                    if (fullList == null) {
+                        fullList = easymagic$computeEnchantList(slot);
+                    }
                     int hintCount = EasyMagicConfig.enchantmentHintCount;
                     int show = hintCount < 0 ? fullList.size() : Math.min(hintCount, fullList.size());
                     if (show > 0 && !fullList.isEmpty()) {
@@ -157,6 +175,7 @@ public abstract class MixinGuiEnchantment extends GuiContainer {
         ItemStack stack = this.container.tableInventory.getStackInSlot(0);
         int level = this.container.enchantLevels[slot];
         if (stack.isEmpty() || level <= 0) return java.util.Collections.emptyList();
+        easymagic$markEnchTableContext();
         Random rand = new Random((long) (this.container.xpSeed + slot));
         List<EnchantmentData> list = EnchantmentHelper.buildEnchantmentList(rand, stack, level, false);
         if (list == null) return java.util.Collections.emptyList();
@@ -164,5 +183,15 @@ public abstract class MixinGuiEnchantment extends GuiContainer {
             list.remove(rand.nextInt(list.size()));
         }
         return list;
+    }
+
+    @Unique
+    private static void easymagic$markEnchTableContext() {
+        if (easymagic$enchTableThreadLocalSet != null) {
+            try {
+                easymagic$enchTableThreadLocalSet.invoke(null, true);
+            } catch (Exception ignored) {
+            }
+        }
     }
 }
