@@ -60,9 +60,14 @@ public class MessageEnchantHints implements IMessage {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    // Client-side hint cache. Deliberately NOT @SideOnly: this message is constructed
+    // server-side (the hints are computed on the server and sent to the client), which
+    // triggers this class's static initializer on a dedicated server. If these fields
+    // were @SideOnly(CLIENT) the server would strip the field declarations but keep the
+    // <clinit> assignment below, throwing NoSuchFieldError and breaking the enchant
+    // container's slot sync (items appearing to vanish/duplicate). The field types are
+    // server-safe, so keeping them present on both sides is harmless.
     private static List<EnchantmentData>[] clientHints;
-    @SideOnly(Side.CLIENT)
     private static int clientHintsWindowId = -1;
 
     @SideOnly(Side.CLIENT)
