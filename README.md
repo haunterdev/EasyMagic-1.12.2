@@ -26,9 +26,7 @@ enchanting mods keep working. Tested with:
   
 - [Enchanting Plus](https://www.curseforge.com/minecraft/mc-mods/enchanting-plus)
 
-The reroll button only accepts actual lapis lazuli (ore dictionary `gemLapis`). Items that
-other mods allow into the lapis slot, like prismarine crystals, won't let you reroll.
-
+The reroll button only accepts actual lapis lazuli (ore dict`gemLapis`).
 ## Building
 
 `./gradlew build` (RetroFuturaGradle). The Reagenchant compat mixins compile against the
