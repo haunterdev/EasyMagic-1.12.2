@@ -26,9 +26,8 @@ Thumbs.db
 # Forge
 eclipse/
 
-# Local dev jars (third-party, not redistributed)
-libs/
 
+libs/
 _docs/
 _logs/
 _original/
