@@ -6,7 +6,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * Lapis validation for the reroll cost. Some mods relax the enchanting table's
  * lapis slot to accept other catalysts (e.g. prismarine crystals), so counting
- * the raw slot-1 stack size is not enough — the item itself must match the
+ * the raw slot-1 stack size is not enough, the item itself must match the
  * same "gemLapis" ore dictionary check Forge patches into the vanilla slot.
  */
 public final class LapisUtil {

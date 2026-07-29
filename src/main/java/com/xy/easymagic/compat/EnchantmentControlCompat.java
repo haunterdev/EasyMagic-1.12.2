@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * {@code <clinit>}, and the try/catch exception-handler range does not survive
  * that merge reliably. The probe's {@code ClassNotFoundException} then escaped
  * the (source-level) catch and surfaced as {@code ExceptionInInitializerError}
- * from the merged {@code <clinit>}, permanently bricking the target — e.g.
+ * from the merged {@code <clinit>}, permanently bricking the target, e.g.
  * {@code GuiEnchantment} could never initialize, so opening an enchanting table
  * crashed the game. A normal class is compiled by javac with a correct
  * exception table, so the probe fails safely here.
