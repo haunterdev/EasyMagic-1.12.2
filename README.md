@@ -31,4 +31,10 @@ The reroll button only accepts actual lapis lazuli (ore dict`gemLapis`).
 
 `./gradlew build` (RetroFuturaGradle). The Reagenchant compat mixins compile against the
 real jars, so building requires `Reagenchant-1.12.2-1.2.1.jar`, `LibraryEx-1.12.2-1.2.2.jar`,
-and the night-config core/json 3.6.0 jars in `libs/` 
+and the night-config core/json 3.6.0 jars in `libs/`.
+
+## License
+
+Code is [MPL-2.0](LICENSE.md), the same licence as the original. The reroll button texture is
+Fuzs' original asset and stays under [its own terms](LICENSE-ASSETS.md).
+
