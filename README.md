@@ -26,7 +26,9 @@ enchanting mods keep working. Tested with:
   
 - [Enchanting Plus](https://www.curseforge.com/minecraft/mc-mods/enchanting-plus)
 
-The reroll button only accepts actual lapis lazuli (ore dict`gemLapis`).
+The reroll button only accepts actual lapis lazuli (ore dictionary `gemLapis`). Items that
+other mods allow into the lapis slot, like prismarine crystals, won't let you reroll.
+
 ## Building
 
 `./gradlew build` (RetroFuturaGradle). The Reagenchant compat mixins compile against the
@@ -35,6 +37,6 @@ and the night-config core/json 3.6.0 jars in `libs/`.
 
 ## License
 
-Code is [MPL-2.0](LICENSE.md), the same licence as the original. The reroll button texture is
-Fuzs' original asset and stays under [its own terms](LICENSE-ASSETS.md).
-
+Code is [MPL-2.0](LICENSE.md), the same licence as the original. The reroll button texture
+is Fuzs' original asset and stays under
+[its own terms](src/main/resources/assets/easymagic/LICENSE-ASSETS.md).
