@@ -2,6 +2,7 @@ package com.xy.easymagic.mixin;
 
 import com.google.common.collect.Lists;
 import com.xy.easymagic.LapisUtil;
+import com.xy.easymagic.XpUtil;
 import com.xy.easymagic.client.GuiButtonReroll;
 import com.xy.easymagic.config.EasyMagicConfig;
 import com.xy.easymagic.network.MessageReroll;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerEnchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
@@ -60,10 +62,11 @@ public abstract class MixinGuiEnchantment extends GuiContainer {
         this.easymagic$rerollButton.y = this.guiTop + EasyMagicConfig.rerollButtonOffsetY;
         this.easymagic$rerollButton.setLapisAvailable(
             LapisUtil.getLapisCount(this.container.tableInventory.getStackInSlot(1)));
-        this.easymagic$rerollButton.setXpAvailable(this.mc.player.experienceTotal);
+        this.easymagic$rerollButton.setXpAvailable(XpUtil.currentPoints(this.mc.player));
         ItemStack tableItem = this.container.tableInventory.getStackInSlot(0);
         this.easymagic$rerollButton.setItemPresent(!tableItem.isEmpty());
-        this.easymagic$rerollButton.setItemEnchanted(!tableItem.isEmpty() && tableItem.isItemEnchanted());
+        this.easymagic$rerollButton.setItemEnchanted(!tableItem.isEmpty()
+            && (tableItem.isItemEnchanted() || !EnchantmentHelper.getEnchantments(tableItem).isEmpty()));
         this.easymagic$rerollButton.updateEnabledState(this.mc.player.capabilities.isCreativeMode);
     }
 
@@ -101,7 +104,7 @@ public abstract class MixinGuiEnchantment extends GuiContainer {
 
             int xpCost = EasyMagicConfig.rerollXpCost;
             if (xpCost >= 1) {
-                int xpAvail = this.mc.player.experienceTotal;
+                int xpAvail = XpUtil.currentPoints(this.mc.player);
                 TextFormatting color = xpAvail >= xpCost ? TextFormatting.GRAY : TextFormatting.RED;
                 String text = xpCost == 1
                         ? I18n.format("easymagic.reroll.xp.one")

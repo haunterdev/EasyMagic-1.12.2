@@ -84,7 +84,10 @@ public abstract class MixinContainerEnchantmentHints {
     private void easymagic$sendEnchantHints(IInventory inventoryIn, CallbackInfo ci) {
         if (this.world.isRemote || this.easymagic$hintPlayer == null) return;
         ItemStack stack = this.tableInventory.getStackInSlot(0);
-        if (stack.isEmpty()) {
+        // An already-enchanted item only gets offers from mods that upgrade enchantments (So Many
+        // Enchantments). Those offers are not vanilla rolls, so a vanilla hint list would be wrong
+        // (GitHub issue #3). Send an empty list and leave that mod's own tooltip alone.
+        if (stack.isEmpty() || stack.isItemEnchanted() || !EnchantmentHelper.getEnchantments(stack).isEmpty()) {
             PacketHandler.INSTANCE.sendTo(
                 new MessageEnchantHints(((Container)(Object)this).windowId,
                     Collections.emptyList(), Collections.emptyList(), Collections.emptyList()),

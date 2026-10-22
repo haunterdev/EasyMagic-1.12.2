@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +52,11 @@ public abstract class MixinContainerEnchantment implements IEasyMagicContainer {
     @Override
     public boolean easymagic$canReroll(boolean isCreative) {
         ItemStack tableItem = this.tableInventory.getStackInSlot(0);
-        if (tableItem.isEmpty() || tableItem.isItemEnchanted()) {
+        // isItemEnchanted() only checks the "ench" tag, so it misses enchanted books, which store
+        // their enchantments under "StoredEnchantments". EnchantmentHelper.getEnchantments branches on
+        // ENCHANTED_BOOK and reads both, so it correctly blocks the reset/reroll on an already-enchanted
+        // book (issue #2 - the reset button was usable on an enchanted book and mis-handled XP).
+        if (tableItem.isEmpty() || tableItem.isItemEnchanted() || !EnchantmentHelper.getEnchantments(tableItem).isEmpty()) {
             return false;
         }
         if (!isCreative) {

@@ -49,7 +49,10 @@ public abstract class MixinContainerReagentTable implements IEasyMagicContainer 
     @Override
     public boolean easymagic$canReroll(boolean isCreative) {
         ItemStack tableItem = this.reagentTableManager.getInventory().getStackInSlot(0);
-        if (tableItem.isEmpty() || tableItem.isItemEnchanted()) {
+        // isItemEnchanted() only checks the "ench" tag, so it misses enchanted books, which store
+        // their enchantments under "StoredEnchantments". EnchantmentHelper.getEnchantments reads both
+        // (it branches on ENCHANTED_BOOK), correctly blocking the reset/reroll on an enchanted book (issue #2).
+        if (tableItem.isEmpty() || tableItem.isItemEnchanted() || !EnchantmentHelper.getEnchantments(tableItem).isEmpty()) {
             return false;
         }
         if (!isCreative) {

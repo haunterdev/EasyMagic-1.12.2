@@ -2,6 +2,7 @@ package com.xy.easymagic.network;
 
 import com.xy.easymagic.EasyMagic;
 import com.xy.easymagic.IEasyMagicContainer;
+import com.xy.easymagic.XpUtil;
 import com.xy.easymagic.config.EasyMagicConfig;
 
 import io.netty.buffer.ByteBuf;
@@ -59,11 +60,11 @@ public class MessageReroll implements IMessage {
                 // XP check (common to both container types)
                 if (!creative) {
                     int xpCost = EasyMagicConfig.rerollXpCost;
-                    if (xpCost > 0 && player.experienceTotal < xpCost) {
+                    if (xpCost > 0 && XpUtil.currentPoints(player) < xpCost) {
                         return;
                     }
                     if (xpCost > 0) {
-                        removeXpPoints(player, xpCost);
+                        XpUtil.removePoints(player, xpCost);
                     }
                 }
 
@@ -88,23 +89,6 @@ public class MessageReroll implements IMessage {
                 emc.easymagic$performReroll(player, newSeed, creative);
             });
             return null;
-        }
-
-        private static void removeXpPoints(EntityPlayerMP player, int points) {
-            player.experienceTotal = Math.max(0, player.experienceTotal - points);
-            player.experienceLevel = 0;
-            player.experience = 0.0F;
-            int remaining = player.experienceTotal;
-            while (remaining > 0) {
-                int cap = player.xpBarCap();
-                if (remaining >= cap) {
-                    remaining -= cap;
-                    player.experienceLevel++;
-                } else {
-                    player.experience = (float) remaining / (float) player.xpBarCap();
-                    break;
-                }
-            }
         }
     }
 }

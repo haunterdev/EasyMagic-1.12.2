@@ -54,7 +54,12 @@ public abstract class MixinGuiEnchantmentHints extends GuiContainer {
         require = 0
     )
     private void easymagic$enhanceEnchantTooltip(GuiEnchantment self, List<String> list, int mouseX, int mouseY) {
-        if (EasyMagicConfig.showEnchantmentHints && EasyMagicConfig.enchantmentHintCount != 1) {
+        ItemStack tableItem = this.container.tableInventory.getStackInSlot(0);
+        // Upgrade offers on an enchanted item come from another mod (So Many Enchantments) and are
+        // not vanilla rolls, so no hint is drawn for them (GitHub issue #3).
+        boolean upgradeOffer = !tableItem.isEmpty()
+                && (tableItem.isItemEnchanted() || !EnchantmentHelper.getEnchantments(tableItem).isEmpty());
+        if (EasyMagicConfig.showEnchantmentHints && EasyMagicConfig.enchantmentHintCount != 1 && !upgradeOffer) {
             for (int slot = 0; slot < 3; slot++) {
                 if (this.isPointInRegion(60, 14 + 19 * slot, 108, 17, mouseX, mouseY)
                         && this.container.enchantLevels[slot] > 0) {

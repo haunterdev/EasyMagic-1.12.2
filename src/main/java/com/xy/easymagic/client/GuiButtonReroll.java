@@ -1,5 +1,6 @@
 package com.xy.easymagic.client;
 
+import com.xy.easymagic.XpUtil;
 import com.xy.easymagic.config.EasyMagicConfig;
 
 import net.minecraft.client.Minecraft;
@@ -81,7 +82,7 @@ public class GuiButtonReroll extends GuiButton {
         boolean cantAffordLapis = lapisCost > 0 && this.lapisAvailable < lapisCost;
         boolean cantAffordXp = false;
         if (!isCreative) {
-            if (xpCost > 0 && mc.player.experienceTotal < xpCost) {
+            if (xpCost > 0 && XpUtil.currentPoints(mc.player) < xpCost) {
                 cantAffordXp = true;
             }
         }
