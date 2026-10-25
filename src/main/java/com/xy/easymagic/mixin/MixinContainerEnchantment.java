@@ -54,8 +54,8 @@ public abstract class MixinContainerEnchantment implements IEasyMagicContainer {
         ItemStack tableItem = this.tableInventory.getStackInSlot(0);
         // isItemEnchanted() only checks the "ench" tag, so it misses enchanted books, which store
         // their enchantments under "StoredEnchantments". EnchantmentHelper.getEnchantments branches on
-        // ENCHANTED_BOOK and reads both, so it correctly blocks the reset/reroll on an already-enchanted
-        // book (issue #2 - the reset button was usable on an enchanted book and mis-handled XP).
+        // ENCHANTED_BOOK and reads both, so it blocks the reset/reroll on an already-enchanted book
+        // (issue #2).
         if (tableItem.isEmpty() || tableItem.isItemEnchanted() || !EnchantmentHelper.getEnchantments(tableItem).isEmpty()) {
             return false;
         }
